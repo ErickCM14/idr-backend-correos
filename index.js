@@ -69,12 +69,12 @@ app.post('/enviar-accesos', async (req, resp) => {
     }
 
     let envio = await envioMensaje(msg);
-    resp.send("El email ha sido enviado");
+    resp.send(envio);
 
 })
 
 envioMensaje = (msg) => {
-    new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
             let msjSend = await sgMail
                 .send(msg)
