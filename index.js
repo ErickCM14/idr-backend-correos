@@ -24,13 +24,15 @@ app.get(`/hola`, (req, res) => {
 })
 
 app.post('/enviar-email', async (req, resp) => {
+    console.log(req.body);
     const body = req.body;
 
     let msj = `<p>Este usuario se registro o intento registrarse en IDR demo en línea<p>` +
         `<p>Nombre: ${body.nombre} ${body.apellido}</p>` +
         `<p>Empresa: ${body.empresa}</p>` +
         `<p>Email: ${body.email}</p>` +
-        `<p>Telèfono: ${body.telefono}</p>`;
+        `<p>Telèfono: ${body.telefono}</p>` +
+        `<p>Telèfono 2: ${body.telefono2}</p>`;
 
     const msg = {
         to: ["contacto@solucionesavanzadasyserviciosdigitales.com", "idr.enlinea@gmail.com"], // Change to your recipient
