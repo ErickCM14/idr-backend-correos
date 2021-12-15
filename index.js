@@ -26,6 +26,12 @@ app.get(`/hola`, (req, res) => {
 app.post('/enviar-email', async (req, resp) => {
     console.log(req.body);
     const body = req.body;
+    if(!body.telefono){
+        body.telefono = "Sin teléfono"
+    }
+    if(!body.telefono2){
+        body.telefono2 = "Sin teléfono"
+    }
 
     let msj = `<p>Este usuario se registro o intento registrarse en IDR demo en línea<p>` +
         `<p>Nombre: ${body.nombre} ${body.apellido}</p>` +
