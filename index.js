@@ -41,10 +41,10 @@ app.post('/enviar-email', async (req, resp) => {
         `<p>Telèfono 2: ${body.telefono2}</p>`;
 
     const msg = {
-        to: ["contacto@solucionesavanzadasyserviciosdigitales.com", "idr.enlinea@gmail.com"], // Change to your recipient
+        to: ["contacto@sas-digital.com.mx", "idr.enlinea@gmail.com"], // Change to your recipient
         from: {
             name: "IDR en línea",
-            email: 'contacto@solucionesavanzadasyserviciosdigitales.com', // Change to your verified sender
+            email: 'contacto@sas-digital.com.mx', // Change to your verified sender
         },
         subject: 'IDR',
         text: msj,
@@ -69,7 +69,7 @@ app.post('/enviar-accesos', async (req, resp) => {
         to: body.email, // Change to your recipient
         from: {
             name: "IDR en línea",
-            email: 'contacto@solucionesavanzadasyserviciosdigitales.com', // Change to your verified sender
+            email: 'contacto@sas-digital.com.mx', // Change to your verified sender
         },
         subject: 'Accesos IDR',
         text: msj,
