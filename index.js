@@ -63,8 +63,9 @@ app.post('/enviar-accesos', async (req, resp) => {
     let msj = `<p>Muchas gracias por registrarse en IDR demo el línea<p>` +
         `<p>Sus accesos para ingresar son: <p>` +
         `<p>Email: ${body.email}</p>` +
-        `<p>Password: ${body.password}</p></br>` +
-        `<a href="https://idrenlinea.sas-digital.com.mx" target="_blank">IDR en linea - Login</a>`;
+        `<p>Password: ${body.password}</p>` ;
+        // +
+        // `<a href="https://idrenlinea.sas-digital.com.mx" target="_blank">IDR en linea - Login</a>`;
 
     const msg = {
         to: body.email, // Change to your recipient
