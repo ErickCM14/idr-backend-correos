@@ -142,6 +142,31 @@ app.post('/enviar-accesos', async (req, resp) => {
 
 })
 
+app.post('/enviar-nueva-contrasena', async (req, resp) => {
+    const body = req.body;
+
+    let msj = 
+        `<p>Sus nuevos accesos para ingresar son: <p>` +
+        `<p>Email: ${body.email}</p>` +
+        `<p>Password: ${body.password}</p></br>` +
+        `<a href="https://idrenlinea.sas-digital.com.mx" target="_blank">IDR en linea - Login</a>`;
+
+    const msg = {
+        to: body.email, // Change to your recipient
+        from: {
+            name: "IDR en línea",
+            email: 'contacto@sas-digital.com.mx', // Change to your verified sender
+        },
+        subject: 'Accesos IDR',
+        text: msj,
+        html: msj,
+    }
+
+    let envio = await envioMensaje(msg);
+    resp.send(envio);
+
+})
+
 envioMensaje = (msg) => {
     return new Promise(async (resolve, reject) => {
         try {
