@@ -16,32 +16,32 @@ app.use(bodyParser.json());
 
 console.log(PORT);
 app.listen(PORT, () => {
-	console.log(`Server listening on port ${process.env.PORT}`)
+    console.log(`Server listening on port ${process.env.PORT}`)
 })
 
 const oauth2Client = new google.auth.OAuth2(
     process.env.CLIENT_ID,
     process.env.CLIENT_SECRET,
     "https://developers.google.com/oauthplayground"
-  );
-  
-  oauth2Client.setCredentials({
+);
+
+oauth2Client.setCredentials({
     refresh_token: process.env.REFRESH_TOKEN
-  });
-  
-  process.env.ACCESS_TOKEN = oauth2Client.getAccessToken();
-  
-  let transporter = nodemailer.createTransport({
+});
+
+process.env.ACCESS_TOKEN = oauth2Client.getAccessToken();
+
+let transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
     secure: true,
     auth: {
-      type: 'OAuth2',
-      clientId: process.env.CLIENT_ID,
-      clientSecret: process.env.CLIENT_SECRET,
+        type: 'OAuth2',
+        clientId: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
     },
-  
-  });
+
+});
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
@@ -49,13 +49,30 @@ app.get(`/hola`, (req, res) => {
     return res.status(200).json({ messaga: 'Hola mundo' })
 })
 
+app.post('/enviar-inicio-sesion', async (req, resp) => {
+
+    const body = req.body;
+
+    let msj = `<p>Este usuario inicio sesión en IDR demo en línea<p>` +
+        `<p>Usuario: ${body.email} </p>`;
+
+    let subject = "Inicio sesión IDR";
+
+    return new Promise(resolve => {
+        sendMail(msj, subject, info => {
+            console.log("Ha sido enviado el correo");
+            resolve(info)
+        })
+    })
+})
+
 app.post('/enviar-email-restringido', async (req, resp) => {
     console.log(req.body);
     const body = req.body;
-    if(!body.telefono){
+    if (!body.telefono) {
         body.telefono = "Sin teléfono"
     }
-    if(!body.telefono2){
+    if (!body.telefono2) {
         body.telefono2 = "Sin teléfono"
     }
 
@@ -63,33 +80,42 @@ app.post('/enviar-email-restringido', async (req, resp) => {
         `<p>Nombre: ${body.nombre} ${body.apellido}</p>` +
         `<p>Empresa: ${body.empresa}</p>` +
         `<p>Email: ${body.email}</p>` +
-        `<p>Telèfono: ${body.telefono}</p>` +
-        `<p>Telèfono 2: ${body.telefono2}</p>`;
+        `<p>Teléfono: ${body.telefono}</p>` +
+        `<p>Teléfono 2: ${body.telefono2}</p>`;
 
-    const msg = {
-        to: ["contacto@sas-digital.com.mx", "idr.enlinea@gmail.com"], // Change to your recipient
-        from: {
-            name: "IDR en línea",
-            email: 'contacto@sas-digital.com.mx', // Change to your verified sender
-        },
-        subject: 'IDR',
-        text: msj,
-        html: msj,
-    }
+    let subject = "Usuario bloqueado IDR";
 
-    let envio = await envioMensaje(msg);
-    console.log(envio);
-    resp.send(envio);
+    return new Promise(resolve => {
+        sendMail(msj, subject, info => {
+            console.log("Ha sido enviado el correo");
+            resolve(info)
+        })
+    })
+
+    // const msg = {
+    //     to: ["contacto@sas-digital.com.mx", "idr.enlinea@gmail.com"], // Change to your recipient
+    //     from: {
+    //         name: "IDR en línea",
+    //         email: 'contacto@sas-digital.com.mx', // Change to your verified sender
+    //     },
+    //     subject: 'IDR',
+    //     text: msj,
+    //     html: msj,
+    // }
+
+    // let envio = await envioMensaje(msg);
+    // console.log(envio);
+    // resp.send(envio);
 
 })
 
 app.post('/enviar-email', async (req, resp) => {
     console.log(req.body);
     const body = req.body;
-    if(!body.telefono){
+    if (!body.telefono) {
         body.telefono = "Sin teléfono"
     }
-    if(!body.telefono2){
+    if (!body.telefono2) {
         body.telefono2 = "Sin teléfono"
     }
 
@@ -97,8 +123,8 @@ app.post('/enviar-email', async (req, resp) => {
         `<p>Nombre: ${body.nombre} ${body.apellido}</p>` +
         `<p>Empresa: ${body.empresa}</p>` +
         `<p>Email: ${body.email}</p>` +
-        `<p>Telèfono: ${body.telefono}</p>` +
-        `<p>Telèfono 2: ${body.telefono2}</p>`;
+        `<p>Teléfono: ${body.telefono}</p>` +
+        `<p>Teléfono 2: ${body.telefono2}</p>`;
 
     const msg = {
         to: ["contacto@sas-digital.com.mx", "idr.enlinea@gmail.com"], // Change to your recipient
@@ -106,7 +132,7 @@ app.post('/enviar-email', async (req, resp) => {
             name: "IDR en línea",
             email: 'contacto@sas-digital.com.mx', // Change to your verified sender
         },
-        subject: 'IDR',
+        subject: 'Registro IDR',
         text: msj,
         html: msj,
     }
@@ -122,7 +148,7 @@ app.post('/enviar-accesos', async (req, resp) => {
 
     let msj = `<p>Muchas gracias por registrarse en IDR demo el línea<p>` +
         `<p>Sus accesos para ingresar son: <p>` +
-        `<p>Email: ${body.email}</p>` +
+        `<p>Usuario: ${body.email}</p>` +
         `<p>Password: ${body.password}</p></br>` +
         `<a href="https://idrenlinea.sas-digital.com.mx" target="_blank">IDR en linea - Login</a>`;
 
@@ -145,9 +171,9 @@ app.post('/enviar-accesos', async (req, resp) => {
 app.post('/enviar-nueva-contrasena', async (req, resp) => {
     const body = req.body;
 
-    let msj = 
+    let msj =
         `<p>Sus nuevos accesos para ingresar son: <p>` +
-        `<p>Email: ${body.email}</p>` +
+        `<p>Usuario: ${body.email}</p>` +
         `<p>Password: ${body.password}</p></br>` +
         `<a href="https://idrenlinea.sas-digital.com.mx" target="_blank">IDR en linea - Login</a>`;
 
@@ -195,45 +221,45 @@ app.post('/enviar-datos', async (req, resp) => {
 })
 
 enviarEmail = (mensaje) => {
-    if(!mensaje.telefono){
+    if (!mensaje.telefono) {
         mensaje.telefono = "Sin teléfono"
     }
-    if(!mensaje.telefono2){
+    if (!mensaje.telefono2) {
         mensaje.telefono2 = "Sin teléfono"
     }
     let msj = `<p>Este usuario creo un Menú gráfico en IDR demo en línea<p>` +
-      `<p>Nombre: ${mensaje.nombre} ${mensaje.apellido}</p>` +
-      `<p>Empresa: ${mensaje.empresa}</p>` +
-      `<p>Email: ${mensaje.email}</p>` +
-      `<p>Teléfono: ${mensaje.telefono}</p>` +
-      `<p>Teléfono 2: ${mensaje.telefono2}</p>` +
-      `<p> <a href="${mensaje.url}" target="_blank">Menú gráfico</a> </p>`;
+        `<p>Nombre: ${mensaje.nombre} ${mensaje.apellido}</p>` +
+        `<p>Empresa: ${mensaje.empresa}</p>` +
+        `<p>Email: ${mensaje.email}</p>` +
+        `<p>Teléfono: ${mensaje.telefono}</p>` +
+        `<p>Teléfono 2: ${mensaje.telefono2}</p>` +
+        `<p> <a href="${mensaje.url}" target="_blank">Menú gráfico</a> </p>`;
+    let subject = "Menú creado - IDR en línea";
     return new Promise(resolve => {
-      sendMail(msj, info => {
-        console.log("Ha sido enviado el correo");
-        resolve(info)
-      })
+        sendMail(msj, subject, info => {
+            console.log("Ha sido enviado el correo");
+            resolve(info)
+        })
     })
 }
 
-async function sendMail(mensaje, callback) {
+async function sendMail(mensaje, subject, callback) {
 
     let mailOptions = {
-      from: 'IDR - Menú <contacto@sas-digital.com.mx>',
-      to: 'contacto@sas-digital.com.mx',
-    //   to: 'erick.info.oficial@gmail.com',
-      cc: ['idr.enlinea@gmail.com'],
-      subject: "Menú creado - IDR en línea",
-      text: mensaje,
-      html: mensaje,
-      auth: {
-        user: process.env.EMAIL,
-        refreshToken: process.env.REFRESH_TOKEN,
-        accessToken: process.env.ACCESS_TOKEN,
-      }
+        from: 'IDR <sas-digital.com.mx@gmail.com>',
+        to: 'contacto@sas-digital.com.mx',
+        cc: ['idr.enlinea@gmail.com'],
+        subject: subject,
+        text: mensaje,
+        html: mensaje,
+        auth: {
+            user: process.env.EMAIL,
+            refreshToken: process.env.REFRESH_TOKEN,
+            accessToken: process.env.ACCESS_TOKEN,
+        }
     }
-  
+
     let info = await transporter.sendMail(mailOptions);
-  
+
     callback(info, "linea 175");
-  }
+}
