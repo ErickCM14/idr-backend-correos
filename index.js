@@ -52,9 +52,19 @@ app.get(`/hola`, (req, res) => {
 app.post('/enviar-inicio-sesion', async (req, resp) => {
 
     const body = req.body;
+    if (!body.telefono) {
+        body.telefono = "Sin teléfono"
+    }
+    if (!body.telefono2) {
+        body.telefono2 = "Sin teléfono"
+    }
 
     let msj = `<p>Este usuario inicio sesión en IDR demo en línea<p>` +
-        `<p>Usuario: ${body.email} </p>`;
+        `<p>Nombre: ${body.nombre} ${body.apellido}</p>` +
+        `<p>Empresa: ${body.empresa}</p>` +
+        `<p>Email: ${body.email}</p>` +
+        `<p>Teléfono: ${body.telefono}</p>` +
+        `<p>Teléfono 2: ${body.telefono2}</p>`;
 
     let subject = "Inicio sesión IDR";
 
